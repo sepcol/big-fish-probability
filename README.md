@@ -1,2 +1,1 @@
-# Example
-An example greeter plugin
+A Big Fish Probability plugin which currently only supports Big Sharks.
