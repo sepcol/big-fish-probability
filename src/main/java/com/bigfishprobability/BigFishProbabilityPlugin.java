@@ -47,14 +47,12 @@ public class BigFishProbabilityPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
-        log.info("BigFishProbabilityPlugin started!");
-
         overlayManager.add(overlay);
     }
 
     @Override
     protected void shutDown() throws Exception {
-        log.info("BigFishProbabilityPlugin stopped!");
+        overlayManager.remove(overlay);
     }
 
     void reset() {
@@ -70,8 +68,6 @@ public class BigFishProbabilityPlugin extends Plugin {
         var message = event.getMessage();
         if (message.contains("You catch a shark!")) {
             sharksFished++;
-            log.info("BigFishProbabilityPlugin shark fished! Total: " + sharksFished);
-
             session.setSharksFishedAmount((float) sharksFished);
             session.setLastFishCaught(Instant.now());
         }
