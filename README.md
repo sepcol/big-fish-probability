@@ -1,1 +1,1 @@
-A Big Fish Probability plugin which currently only supports Big Sharks.
+A Big Fish Probability plugin which supports Big: Bass , Sharks and Swordfish.

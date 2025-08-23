@@ -1,40 +1,78 @@
-/*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package com.bigfishprobability;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.EnumMap;
 
 class BigFishingSession {
     @Getter
     @Setter
     private Instant lastFishCaught;
 
-    @Getter
     @Setter
-    private float sharksFishedAmount;
+    @Getter
+    private FishType activeFishType;
+    private final EnumMap<FishType, Integer> caughtFish;
+
+    public BigFishingSession() {
+        caughtFish = new EnumMap<>(FishType.class);
+        for (FishType type : FishType.values()) {
+            caughtFish.put(type, 0);
+        }
+    }
+
+    public void catchFish(FishType type, int amount) {
+        caughtFish.put(type, caughtFish.get(type) + amount);
+    }
+
+    public void catchActiveFish(int amount) {
+        if (activeFishType != null) {
+            catchFish(activeFishType, amount);
+        }
+    }
+
+    public int getCaughtFish(FishType type) {
+        return caughtFish.get(type);
+    }
+
+    public int getCaughtActiveFish() {
+        if (activeFishType == null) return 0;
+        return getCaughtFish(activeFishType);
+    }
+
+    public String getActiveFishMessage() {
+        if (activeFishType == null) {
+            return "Nothing caught";
+        }
+
+        int amount = getCaughtActiveFish();
+        String fishName = formatFishName(activeFishType, amount);
+
+        return "Caught " + fishName;
+    }
+
+    private String formatFishName(FishType type, int amount) {
+        if (activeFishType == FishType.SHARK) {
+            String name = type.name().toLowerCase(); // "shark"
+            name = name.substring(0, 1).toUpperCase() + name.substring(1); // "Shark"
+
+            // Very simple plural rule (add "s" if >1)
+            if (amount != 1) {
+                name += "s";
+            }
+
+            return name;
+        } else return type.name().toLowerCase();
+    }
+
+    public float getProbability() {
+        if (activeFishType == null) {
+            return 0f;
+        }
+
+        return (getCaughtActiveFish() / activeFishType.getProbability()) * 100f;
+    }
+
 }

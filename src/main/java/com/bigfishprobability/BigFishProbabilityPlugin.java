@@ -34,7 +34,9 @@ public class BigFishProbabilityPlugin extends Plugin {
     @Inject
     private BigFishProbabilityOverlay overlay;
 
-    int sharksFished = 0;
+    private int sharksCaught = 0;
+    private int swordfishCaught = 0;
+    private int bassCaught = 0;
 
     @Getter(AccessLevel.PACKAGE)
     private final BigFishingSession session = new BigFishingSession();
@@ -67,8 +69,16 @@ public class BigFishProbabilityPlugin extends Plugin {
 
         var message = event.getMessage();
         if (message.contains("You catch a shark!")) {
-            sharksFished++;
-            session.setSharksFishedAmount((float) sharksFished);
+            session.setActiveFishType(FishType.SHARK);
+            session.catchActiveFish(1);
+            session.setLastFishCaught(Instant.now());
+        } else if (message.contains("You catch a raw bass.")) {
+            session.setActiveFishType(FishType.BASS);
+            session.catchActiveFish(1);
+            session.setLastFishCaught(Instant.now());
+        } else if (message.contains("You catch a raw swordfish.")) {
+            session.setActiveFishType(FishType.SWORDFISH);
+            session.catchActiveFish(1);
             session.setLastFishCaught(Instant.now());
         }
     }
