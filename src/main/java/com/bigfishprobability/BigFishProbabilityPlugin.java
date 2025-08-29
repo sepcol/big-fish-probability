@@ -26,17 +26,10 @@ import java.time.Instant;
 public class BigFishProbabilityPlugin extends Plugin {
 
     @Inject
-    private Client client;
-
-    @Inject
     private BigFishProbabilityConfig config;
 
     @Inject
     private BigFishProbabilityOverlay overlay;
-
-    private int sharksCaught = 0;
-    private int swordfishCaught = 0;
-    private int bassCaught = 0;
 
     @Getter(AccessLevel.PACKAGE)
     private final BigFishingSession session = new BigFishingSession();
@@ -67,19 +60,14 @@ public class BigFishProbabilityPlugin extends Plugin {
             return;
         }
 
-        var message = event.getMessage();
-        if (message.contains("You catch a shark!")) {
-            session.setActiveFishType(FishType.SHARK);
-            session.catchActiveFish(1);
-            session.setLastFishCaught(Instant.now());
-        } else if (message.contains("You catch a raw bass.")) {
-            session.setActiveFishType(FishType.BASS);
-            session.catchActiveFish(1);
-            session.setLastFishCaught(Instant.now());
-        } else if (message.contains("You catch a raw swordfish.")) {
-            session.setActiveFishType(FishType.SWORDFISH);
-            session.catchActiveFish(1);
-            session.setLastFishCaught(Instant.now());
+        var fishMessage = event.getMessage();
+        for (FishType type : FishType.values()) {
+            if (type.matches(fishMessage)) {
+                session.setActiveFishType(type);
+                session.catchActiveFish(1);
+                session.setLastFishCaught(Instant.now());
+                break;
+            }
         }
     }
 
