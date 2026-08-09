@@ -67,12 +67,7 @@ class BigFishingSession {
         } else return type.name().toLowerCase();
     }
 
-
-    /**
-     * Calculates the probability of getting at least one big fish
-     * after the current number of attempts.
-     */
-    public float getProbability() {
+    public float getChanceOfAtLeastOneBigFish() {
         int attempts = getCaughtActiveFish();
 
         if (activeFishType == null || attempts <= 0) {
