@@ -97,7 +97,7 @@ class BigFishProbabilityOverlay extends OverlayPanel {
                     .right(Integer.toString(plugin.getSession().getCaughtActiveFish()))
                     .build());
 
-            float probability = plugin.getSession().getProbability();
+            float probability = plugin.getSession().getChanceOfAtLeastOneBigFish();
             BigDecimal probabilityBd = new BigDecimal(probability).setScale(2, RoundingMode.HALF_UP);
 
             panelComponent.getChildren().add(LineComponent.builder()
